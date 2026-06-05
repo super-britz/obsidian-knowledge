@@ -18,4 +18,4 @@ status: 已链接
 
 ## 本地解读
 
-从这个来源整理出的初始 wiki 综合页见 [[llm-wiki-pattern]]。
+从这个来源整理出的初始 wiki 综合页见 [[LLM Wiki 模式]]。

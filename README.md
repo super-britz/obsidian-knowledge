@@ -10,15 +10,17 @@
 ## 目录结构
 
 ```text
-raw/        原始资料、链接说明、剪藏、文件和本地附件。
-wiki/       由 LLM 维护的 Markdown wiki 页面。
-AGENTS.md   Codex 和其他 agent 的维护规则。
+raw/              原始资料、链接说明、剪藏、文件和本地附件。
+raw/links/        只记录 URL 的来源说明页，文件名使用日期前缀。
+raw/clippings/    Web Clipper 或手动保存的网页全文/长摘录快照，文件名使用日期前缀。
+wiki/             由 LLM 维护的 Markdown wiki 页面，文件名优先使用中文概念名。
+AGENTS.md         Codex 和其他 agent 的维护规则。
 ```
 
 特殊 wiki 文件：
 
-- `wiki/index.md`：按内容组织的索引。
-- `wiki/log.md`：按时间追加的活动日志。
+- `wiki/00-索引.md`：按内容组织的索引，使用 `00-` 前缀以便在 Obsidian 文件排序中置顶。
+- `wiki/00-日志.md`：按时间追加的活动日志，和索引固定排在一起。
 
 ## 基本流程
 

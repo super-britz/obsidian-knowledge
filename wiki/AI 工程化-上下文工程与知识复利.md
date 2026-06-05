@@ -4,7 +4,7 @@ status: 草稿
 created: 2026-06-04
 updated: 2026-06-04
 sources:
-  - raw/认知重建：Speckit 用了三个月，我放弃了——走出工具很强但用不好的困境.md
+  - raw/clippings/2026-06-04-认知重建-Speckit 用了三个月我放弃了.md
 ---
 
 # AI 工程化：上下文工程与知识复利
@@ -89,7 +89,7 @@ Plan -> Work -> Review -> Compound
 
 ## 与 LLM Wiki 模式的关系
 
-这篇来源和 [[llm-wiki-pattern]] 可以互相补充。LLM Wiki 模式解决的是个人知识库如何把 raw 资料持续整合进 wiki；AI 工程化解决的是研发工作流如何把历史经验持续整合进工具链。
+这篇来源和 [[LLM Wiki 模式]] 可以互相补充。LLM Wiki 模式解决的是个人知识库如何把 raw 资料持续整合进 wiki；AI 工程化解决的是研发工作流如何把历史经验持续整合进工具链。
 
 两者共享同一个原则：原始材料不等于可复用知识，只有经过整理、链接、索引和复盘，知识才会在下一次工作中变成上下文。
 
@@ -105,10 +105,10 @@ Plan -> Work -> Review -> Compound
 
 ## 相关链接
 
-- [[llm-wiki-pattern]]
-- [[index]]
-- [[log]]
+- [[LLM Wiki 模式]]
+- [[00-索引|索引]]
+- [[00-日志|日志]]
 
 ## 来源
 
-- [[raw/认知重建：Speckit 用了三个月，我放弃了——走出工具很强但用不好的困境|认知重建：Speckit 用了三个月，我放弃了]]
+- [[raw/clippings/2026-06-04-认知重建-Speckit 用了三个月我放弃了|认知重建：Speckit 用了三个月，我放弃了]]
