@@ -107,7 +107,6 @@ Plan -> Work -> Review -> Compound
 
 - [[LLM Wiki 模式]]
 - [[00-索引|索引]]
-- [[00-日志|日志]]
 
 ## 来源
 
