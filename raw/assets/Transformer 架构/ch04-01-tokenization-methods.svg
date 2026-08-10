@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="820" viewBox="0 0 1200 820" role="img" aria-labelledby="title desc">
+  <title id="title">两种 Tokenization 方法</title>
+  <desc id="desc">对比按字符编号和 cl100k_base 的字节级 BPE。同一段十个汉字分别得到十个字符 ID 和十四个 BPE token。</desc>
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="820" fill="#ffffff"/>
+  <style>
+    .title { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 42px; font-weight: 700; fill: #111827; }
+    .subtitle { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 21px; font-weight: 500; fill: #64748b; }
+    .label { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 21px; font-weight: 700; fill: #111827; }
+    .body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 18px; font-weight: 500; fill: #334155; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 17px; font-weight: 600; fill: #334155; }
+    .count { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 19px; font-weight: 700; }
+  </style>
+
+  <text x="600" y="70" text-anchor="middle" class="title">两种 Tokenization 方法</text>
+  <rect x="100" y="130" width="1000" height="76" rx="13" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="600" y="179" text-anchor="middle" class="label">输入：小沈阳江西演唱会邀请</text>
+
+  <rect x="90" y="255" width="470" height="390" rx="16" fill="#dbeafe" stroke="#93c5fd" stroke-width="2" filter="url(#shadow)"/>
+  <text x="325" y="300" text-anchor="middle" class="label">方法一：按字符编号</text>
+  <text x="325" y="342" text-anchor="middle" class="mono">小  沈  阳  江  西</text>
+  <text x="325" y="378" text-anchor="middle" class="mono">1   2   3   4   5</text>
+  <text x="325" y="430" text-anchor="middle" class="mono">演  唱  会  邀  请</text>
+  <text x="325" y="466" text-anchor="middle" class="mono">6   7   8   9  10</text>
+  <line x1="160" y1="510" x2="490" y2="510" stroke="#93c5fd" stroke-width="2"/>
+  <text x="325" y="554" text-anchor="middle" class="body">一个字符固定对应一个 ID</text>
+  <text x="325" y="598" text-anchor="middle" class="count" fill="#1d4ed8">10 个字符 → 10 个 ID</text>
+
+  <rect x="640" y="255" width="470" height="390" rx="16" fill="#dcfce7" stroke="#86efac" stroke-width="2" filter="url(#shadow)"/>
+  <text x="875" y="300" text-anchor="middle" class="label">方法二：cl100k_base 字节级 BPE</text>
+  <text x="875" y="342" text-anchor="middle" class="mono">小 → 31809</text>
+  <text x="875" y="376" text-anchor="middle" class="mono">沈 → 31106, 230</text>
+  <text x="875" y="410" text-anchor="middle" class="mono">阳 → 83175</text>
+  <text x="875" y="444" text-anchor="middle" class="mono">演 → 78256, 242</text>
+  <text x="875" y="478" text-anchor="middle" class="mono">邀 → 45932, 222</text>
+  <text x="875" y="512" text-anchor="middle" class="mono">…</text>
+  <text x="875" y="554" text-anchor="middle" class="body">高频片段可以合并，罕见字也可以拆分</text>
+  <text x="875" y="598" text-anchor="middle" class="count" fill="#15803d">10 个字符 → 14 个 token</text>
+
+  <text x="600" y="724" text-anchor="middle" class="subtitle">这一句里 BPE 反而更长；效率取决于具体文本和 tokenizer，不存在固定换算比例。</text>
+</svg>

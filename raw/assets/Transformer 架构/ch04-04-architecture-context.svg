@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="820" viewBox="0 0 1200 820" role="img" aria-labelledby="title desc">
+  <title id="title">Tokenization 在 Transformer 中的位置</title>
+  <desc id="desc">Tokenization 把输入文字转成 token ID，之后才进入 Embedding、位置信息和 Transformer Blocks。</desc>
+  <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#475569"/></marker></defs>
+  <rect width="1200" height="820" fill="#ffffff"/>
+  <style>
+    .title { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 42px; font-weight: 700; fill: #111827; }
+    .label { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 21px; font-weight: 700; fill: #111827; }
+    .small { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 17px; font-weight: 500; fill: #475569; }
+  </style>
+  <text x="600" y="72" text-anchor="middle" class="title">Tokenization 在哪里？</text>
+  <rect x="350" y="125" width="500" height="66" rx="13" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/><text x="600" y="167" text-anchor="middle" class="label">输入文字</text>
+  <line x1="600" y1="191" x2="600" y2="228" stroke="#475569" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="315" y="238" width="570" height="94" rx="15" fill="#fef3c7" stroke="#f59e0b" stroke-width="3"/><text x="600" y="277" text-anchor="middle" class="label">Tokenization</text><text x="600" y="310" text-anchor="middle" class="small">切成 token，转成 token IDs</text>
+  <line x1="600" y1="332" x2="600" y2="369" stroke="#475569" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="350" y="379" width="500" height="66" rx="13" fill="#dbeafe" stroke="#60a5fa" stroke-width="2"/><text x="600" y="421" text-anchor="middle" class="label">Embedding Lookup</text>
+  <line x1="600" y1="445" x2="600" y2="482" stroke="#475569" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="350" y="492" width="500" height="66" rx="13" fill="#dcfce7" stroke="#4ade80" stroke-width="2"/><text x="600" y="534" text-anchor="middle" class="label">注入位置信息</text>
+  <line x1="600" y1="558" x2="600" y2="595" stroke="#475569" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="350" y="605" width="500" height="66" rx="13" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2"/><text x="600" y="647" text-anchor="middle" class="label">Transformer Blocks</text>
+  <line x1="600" y1="671" x2="600" y2="708" stroke="#475569" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="350" y="718" width="500" height="66" rx="13" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/><text x="600" y="760" text-anchor="middle" class="label">词表 logits / 概率</text>
+</svg>
