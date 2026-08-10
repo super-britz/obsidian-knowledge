@@ -159,7 +159,7 @@ Embedding 参数量只是模型总参数量的一部分。通常所说的“多�
 
 - 上一章：[[wiki/读书笔记/Transformer 架构/03-Transformer 全景图|第 3 章：Transformer 全景图]]
 - 读书入口：[[wiki/读书笔记/Transformer 架构/00-索引|《Transformer 架构：从直觉到实现》读书笔记]]
-- 下一章：Positional Encoding（位置编码）
+- 下一章：[[wiki/读书笔记/Transformer 架构/05-Positional-Encoding-给文字加位置|第 5 章：Positional Encoding - 给文字加位置]]
 
 ## 来源
 
