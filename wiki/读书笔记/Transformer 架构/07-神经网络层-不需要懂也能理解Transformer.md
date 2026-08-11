@@ -160,7 +160,7 @@ FFN（Feed Forward Network，前馈网络）是 Transformer 中的神经网络�
 - 上一章：[[wiki/读书笔记/Transformer 架构/06-LayerNorm与Softmax-数字的缩放与概率化|第 6 章：LayerNorm 与 Softmax - 数字的缩放与概率化]]
 - 前置全景：[[wiki/读书笔记/Transformer 架构/03-Transformer 全景图|第 3 章：Transformer 全景图]]
 - 读书入口：[[wiki/读书笔记/Transformer 架构/00-索引|《Transformer 架构：从直觉到实现》读书笔记]]
-- 下一章：第 8 章：线性变换的几何意义（待整理）
+- 下一章：[[wiki/读书笔记/Transformer 架构/08-线性变换的几何意义-矩阵乘法的本质|第 8 章：线性变换的几何意义 - 矩阵乘法的本质]]
 
 ## 来源
 
