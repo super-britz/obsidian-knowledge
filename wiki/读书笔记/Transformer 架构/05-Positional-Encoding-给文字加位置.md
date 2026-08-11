@@ -147,7 +147,7 @@ Input     [seq_len, d_model]
 - 上一章：[[wiki/读书笔记/Transformer 架构/04-Tokenization-文字如何变成数字|第 4 章：Tokenization - 文字如何变成数字]]
 - 前置全景：[[wiki/读书笔记/Transformer 架构/03-Transformer 全景图|第 3 章：Transformer 全景图]]
 - 读书入口：[[wiki/读书笔记/Transformer 架构/00-索引|《Transformer 架构：从直觉到实现》读书笔记]]
-- 下一章：LayerNorm（Layer Normalization，层归一化）与 Softmax（概率化）
+- 下一章：[[wiki/读书笔记/Transformer 架构/06-LayerNorm与Softmax-数字的缩放与概率化|第 6 章：LayerNorm 与 Softmax - 数字的缩放与概率化]]
 
 ## 来源
 
