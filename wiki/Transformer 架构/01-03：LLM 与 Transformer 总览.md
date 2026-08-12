@@ -1,13 +1,14 @@
 ---
-type: 概念建模
+type: 主题笔记
 status: 已整理
+source_chapters: [1, 2, 3]
 created: 2026-08-11
-updated: 2026-08-11
+updated: 2026-08-12
 sources:
   - "raw/links/2026-08-11-Transformer架构从直觉到实现.md"
 ---
 
-# 大语言模型与 Transformer：它怎样根据上下文接着说
+# 第 1～3 章：LLM 与 Transformer 总览
 
 > [!abstract] 可以先把 LLM 想成一个不断“接话”的程序：看已有内容，预测下一个 Token，把它接到后面，再重复。Transformer 是它每次决定“现在该重点看什么、下一步接什么”的核心结构。
 
@@ -54,5 +55,7 @@ sources:
 
 - **来源事实：** 第 1～3 章介绍 Transformer 的演进背景，以及从 Tokenization、Embedding、位置编码、Transformer Block 到下一个 Token 预测的整体流程。
 - **本页推论：** 因为模型依赖上下文逐步生成，LLM / Agent 必须管理上下文、事实来源、工具权限与验证。
-- **下一步：** [[02-Tokenization：文字怎样变成模型能计算的编号|Tokenization]]、[[03-位置编码：模型怎么知道 Token 的先后顺序|位置编码]]、Attention 与 QKV（待整理）。
+- **覆盖章节：** 第 1～3 章。
+- **下一主题：** [[04：Tokenization|Tokenization]]。
+- **专题索引：** [[00：索引|Transformer 架构学习索引]]。
 - **来源：** [[raw/links/2026-08-11-Transformer架构从直觉到实现|Transformer 架构：从直觉到实现]]。

@@ -1,8 +1,9 @@
 ---
-type: 概念建模
+type: 章节笔记
 status: 已整理
+chapter: 4
 created: 2026-08-11
-updated: 2026-08-11
+updated: 2026-08-12
 sources:
   - "raw/links/2026-08-11-Transformer架构从直觉到实现.md"
 ---
@@ -53,5 +54,5 @@ sources:
 
 - **来源事实：** 第 4 章说明文字先经 Tokenization 得到 Token ID，再通过 Embedding Lookup 变成向量；章节介绍了字节级 BPE / tiktoken 与上下文长度的关系。
 - **本页推论：** 工具结果也是上下文的一部分，控制它的长度和信息密度是 Agent 成本与质量设计的一部分。
-- **下一步：** [[03-位置编码：模型怎么知道 Token 的先后顺序|位置编码]]、Attention 与 QKV（待整理）。
+- **下一步：** [[05：位置编码|位置编码]]、Attention 与 QKV（待整理）。
 - **来源：** [[raw/links/2026-08-11-Transformer架构从直觉到实现|Transformer 架构：从直觉到实现]]。

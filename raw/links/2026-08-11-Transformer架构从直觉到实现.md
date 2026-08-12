@@ -26,5 +26,5 @@ status: 已链接
 
 ## 本地解读
 
-- 专题学习入口：[[wiki/Transformer 架构/00-索引|Transformer 架构学习地图]]
-- 已整理概念：[[wiki/Transformer 架构/01-大语言模型与 Transformer 总览|大语言模型与 Transformer 总览]]
+- 专题学习入口：[[wiki/Transformer 架构/00：索引|Transformer 架构学习索引]]
+- 已整理概念：[[wiki/Transformer 架构/01-03：LLM 与 Transformer 总览|Transformer 总览]]

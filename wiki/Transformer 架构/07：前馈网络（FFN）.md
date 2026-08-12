@@ -1,8 +1,9 @@
 ---
-type: 概念建模
+type: 章节笔记
 status: 已整理
+chapter: 7
 created: 2026-08-11
-updated: 2026-08-11
+updated: 2026-08-12
 sources:
   - "raw/links/2026-08-11-Transformer架构从直觉到实现.md"
 ---
