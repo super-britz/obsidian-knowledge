@@ -8,7 +8,7 @@ sources:
   - "raw/links/2026-08-11-Transformer架构从直觉到实现.md"
 ---
 
-# 第 9～12 章：Attention——从匹配分数到信息混合
+# 第 9～12 章：Attention（注意力机制）——从匹配分数到信息混合
 
 > [!abstract] Attention 让每个 Token 根据当前需要，从允许查看的其他 Token 中取回相关信息。它不是单一步骤，而是一条完整链：生成 Q/K/V → 打匹配分 → 变成权重 → 混合信息 → 多头合并成新的上下文表示。
 

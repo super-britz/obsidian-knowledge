@@ -8,7 +8,7 @@ sources:
   - "raw/links/2026-08-11-Transformer架构从直觉到实现.md"
 ---
 
-# LayerNorm 与 Softmax：怎样让数字稳定、让模型做选择
+# LayerNorm（Layer Normalization，层归一化）与 Softmax：怎样让数字稳定、让模型做选择
 
 > [!abstract] LayerNorm 像模型内部的“标尺”，让中间数字保持较稳定的尺度；Softmax 像“概率转换器”，把候选分数变成总和为 1 的概率，帮助模型选择下一步。
 

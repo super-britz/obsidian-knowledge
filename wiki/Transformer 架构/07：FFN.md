@@ -8,7 +8,7 @@ sources:
   - "raw/links/2026-08-11-Transformer架构从直觉到实现.md"
 ---
 
-# 前馈网络：模型怎样加工每个 Token 的信息
+# FFN（Feed-Forward Network，前馈网络）：模型怎样加工每个 Token 的信息
 
 > [!abstract] Attention 负责让一个 Token 从其他位置拿到相关信息；前馈网络（FFN）负责把拿到的信息在“当前 Token 自己的向量里”继续加工。它通常先把向量扩宽、经过非线性变化、再缩回原来的大小。
 

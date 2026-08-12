@@ -8,7 +8,7 @@ sources:
   - "raw/links/2026-08-11-Transformer架构从直觉到实现.md"
 ---
 
-# 第 1～3 章：LLM 与 Transformer 总览
+# 第 1～3 章：LLM（Large Language Model，大语言模型）与 Transformer 总览
 
 > [!abstract] 可以先把 LLM 想成一个不断“接话”的程序：看已有内容，预测下一个 Token，把它接到后面，再重复。Transformer 是它每次决定“现在该重点看什么、下一步接什么”的核心结构。
 
