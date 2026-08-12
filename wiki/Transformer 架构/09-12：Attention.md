@@ -56,5 +56,5 @@ sources:
 
 - **来源事实：** 第 9～12 章依次说明 Attention 的匹配直觉、Q/K/V 的生成、Multi-Head 的拆分与合并，以及 Attention 输出、隐藏状态和可训练参数之间的边界。
 - **本页推论：** LLM 应用负责把可信、相关、受预算约束的上下文交给 Attention；事实验证、权限和外部动作仍由应用系统负责。
-- **下一主题：** 第 13～15 章：残差、输入表示与完整前向传播。
+- **下一主题：** [[13-15：Transformer Block 与前向传播|第 13～15 章：Transformer Block 与前向传播]]。
 - **来源：** [[raw/links/2026-08-11-Transformer架构从直觉到实现|Transformer 架构：从直觉到实现]]。
