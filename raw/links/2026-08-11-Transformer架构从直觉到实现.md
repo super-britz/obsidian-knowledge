@@ -37,6 +37,12 @@ status: 已链接
 - 第 20 章：手写 Inference.py：https://waylandz.com/llm-transformer-book/第20章-手写Inference.py-推理逻辑
 - 第 21 章：Flash Attention：https://waylandz.com/llm-transformer-book/第21章-Flash-Attention-内存优化原理/
 - 第 22 章：KV Cache：https://waylandz.com/llm-transformer-book/第22章-KV-Cache-推理加速/
+- 第 23 章：MHA 到 MQA 到 GQA：https://waylandz.com/llm-transformer-book/第23章-MHA到MQA到GQA演进/
+- 第 24 章：Sparse 与 Infinite Attention：https://waylandz.com/llm-transformer-book/第24章-Sparse与Infinite-Attention/
+- 第 25 章：位置编码演进：https://waylandz.com/llm-transformer-book/第25章-位置编码演进-Sinusoidal到RoPE到ALiBi/
+- 第 26 章：LoRA 与 QLoRA：https://waylandz.com/llm-transformer-book/第26章-LoRA与QLoRA-高效微调/
+- 第 27 章：模型量化：https://waylandz.com/llm-transformer-book/第27章-模型量化-GPTQ-AWQ-GGUF/
+- 第 28 章：Prompt Engineering：https://waylandz.com/llm-transformer-book/第28章-Prompt-Engineering-提示工程实战/
 
 ## 使用限制
 

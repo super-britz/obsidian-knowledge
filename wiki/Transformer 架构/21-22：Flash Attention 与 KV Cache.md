@@ -265,5 +265,5 @@ KV Cache 实际占用
 - **来源事实：** 第 21 章解释 GPU 内存层级、Tiling、Online Softmax、Flash Attention 的 IO 优化及使用边界；第 22 章解释自回归重复计算、KV Cache、Prefill / Decode、缓存显存公式和后续压缩方向。
 - **机制推导：** Flash Attention 优化单次 Attention 的临时 IO，KV Cache 优化多次 Decode 之间的重复计算；两者共同决定长上下文推理中的临时内存、持久状态、延迟与吞吐。
 - **工程补充：** 性能验收应拆分 TTFT、TPOT、吞吐和显存，并通过数值对照确认融合内核与 Cache 没有破坏 Attention 语义。
-- **下一主题：** 第 23 章：MQA / GQA / MHA 注意力变体。
+- **下一主题：** [[23：MHA、MQA 与 GQA|第 23 章：MHA、MQA 与 GQA]]。
 - **来源：** [[raw/links/2026-08-11-Transformer架构从直觉到实现|Transformer 架构：从直觉到实现]]、[[raw/links/2026-08-12-PyTorch-Module状态与Buffer|PyTorch Module 状态、Autograd 与 Buffer]]。

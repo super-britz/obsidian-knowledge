@@ -2,7 +2,7 @@
 type: 概念
 status: 草稿
 created: 2026-06-04
-updated: 2026-06-04
+updated: 2026-08-12
 sources:
   - raw/clippings/2026-06-04-认知重建-Speckit 用了三个月我放弃了.md
 ---
@@ -106,7 +106,8 @@ Plan -> Work -> Review -> Compound
 ## 相关链接
 
 - [[LLM Wiki 模式]]
-- [[00-索引|索引]]
+- [[wiki/Transformer 架构/28：Prompt 工程|Prompt 工程]]
+- [[wiki/00-索引|索引]]
 
 ## 来源
 
