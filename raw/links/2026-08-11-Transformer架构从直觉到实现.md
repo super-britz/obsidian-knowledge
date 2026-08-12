@@ -43,6 +43,10 @@ status: 已链接
 - 第 26 章：LoRA 与 QLoRA：https://waylandz.com/llm-transformer-book/第26章-LoRA与QLoRA-高效微调/
 - 第 27 章：模型量化：https://waylandz.com/llm-transformer-book/第27章-模型量化-GPTQ-AWQ-GGUF/
 - 第 28 章：Prompt Engineering：https://waylandz.com/llm-transformer-book/第28章-Prompt-Engineering-提示工程实战/
+- 第 29 章：RLHF 与偏好学习：https://waylandz.com/llm-transformer-book/第29章-RLHF与偏好学习-让模型对齐人类/
+- 第 30 章：Mixture of Experts：https://waylandz.com/llm-transformer-book/第30章-Mixture-of-Experts-稀疏激活的秘密/
+- 第 31 章：推理模型革命：https://waylandz.com/llm-transformer-book/第31章-推理模型革命-从o1到R1/
+- 第 32 章：后 Transformer 架构：https://waylandz.com/llm-transformer-book/第32章-后Transformer架构-Mamba与混合模型/
 
 ## 使用限制
 
