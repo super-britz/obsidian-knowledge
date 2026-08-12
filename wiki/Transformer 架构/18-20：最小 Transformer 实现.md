@@ -1,16 +1,21 @@
 ---
 type: 主题笔记
 status: 已整理
+reading_mode: 深入机制
 source_chapters: [18, 19, 20]
 created: 2026-08-12
 updated: 2026-08-12
 sources:
   - "raw/links/2026-08-11-Transformer架构从直觉到实现.md"
+  - "raw/links/2026-08-12-PyTorch-Module状态与Buffer.md"
 ---
 
 # 第 18～20 章：最小 Decoder-Only Transformer 实现
 
 > [!abstract] 一个最小语言模型项目不是只有 `Model` 类，而是三份代码共同形成闭环：`model.py` 把 Token 映射成 logits，`train.py` 用下一个 Token 目标更新参数，`inference.py` 用相同配置恢复参数并循环生成。真正需要理解的是三者共享的形状、词表、配置和检查点契约，而不是逐行背代码。
+
+> [!info] 阅读粒度
+> 本页以三份代码共享的系统契约为主题，因此标为“深入机制”；快速复述时，阅读摘要、“项目闭环”、职责表和“来源代码的教学边界”即可。
 
 ## 先看项目闭环
 
@@ -77,13 +82,13 @@ T <= context_length
 
 ### 为什么 Causal Mask 应注册为 Buffer
 
-因果 Mask 不是需要优化器更新的参数，但它需要随模型一起移动设备和保存状态，因此适合使用：
+因果 Mask 不是需要优化器更新的参数，但通常需要随模型一起移动设备，因此适合注册为 Buffer：
 
 ```python
-self.register_buffer("causal_mask", mask)
+self.register_buffer("causal_mask", mask, persistent=False)
 ```
 
-同理，固定位置编码如果不会变化，也更适合在初始化时构造为 Buffer，而不是每次 `forward()` 都重新计算。
+`persistent=False` 表示它不进入 `state_dict`，适合可由配置重新构造的固定 Mask；若某个 Buffer 确实属于必须保存的模型状态，再使用默认的持久 Buffer。同理，固定位置编码如果不会变化，也更适合在初始化时构造为 Buffer，而不是每次 `forward()` 都重新计算；是否持久化应按恢复契约决定。
 
 ### `forward()` 和 `generate()` 不是同一个层次
 
@@ -226,7 +231,7 @@ scheduler_state_dict
 - 因果 Mask 是否方向相反；
 - 参数是否进入优化器；
 - 梯度是否为零、NaN 或没有生成；
-- 模型是否误留在 `eval()` 模式。
+- 训练前向是否误包在 `no_grad()` / `inference_mode()` 中，或参数的 `requires_grad` 是否被关闭；`eval()` 本身不会关闭梯度，不应把它当作参数完全不更新的原因。
 
 ### 3. 保存—加载一致性测试
 
@@ -271,5 +276,5 @@ scheduler_state_dict
 - **来源事实：** 第 18 章实现 FFN、因果 Attention、Multi-Head Attention、Pre-Norm Block、完整模型与生成循环；第 19 章实现 Token 化、随机 Batch、交叉熵、验证、AdamW、训练循环和检查点；第 20 章实现模型恢复、Prompt 编码、自回归采样、解码及常见生成问题诊断。
 - **机制推导：** 三份文件通过 Tokenizer、模型配置、张量形状和 checkpoint schema 构成同一个系统契约；任一侧不一致都会在加载、训练或生成阶段暴露。
 - **工程建议：** 来源代码适合概念验证；真正训练或部署前，应补齐完整词表、设备可移植性、恢复训练状态、停止条件、测试、日志与性能优化。
-- **下一主题：** 第 21～22 章：推理优化。
-- **来源：** [[raw/links/2026-08-11-Transformer架构从直觉到实现|Transformer 架构：从直觉到实现]]。
+- **下一主题：** [[21-22：Flash Attention 与 KV Cache|第 21～22 章：Flash Attention 与 KV Cache]]。
+- **来源：** [[raw/links/2026-08-11-Transformer架构从直觉到实现|Transformer 架构：从直觉到实现]]、[[raw/links/2026-08-12-PyTorch-Module状态与Buffer|PyTorch Module 状态、Autograd 与 Buffer]]。

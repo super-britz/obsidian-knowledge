@@ -1,6 +1,7 @@
 ---
 type: 主题笔记
 status: 已整理
+reading_mode: 深入机制
 source_chapters: [13, 14, 15]
 created: 2026-08-12
 updated: 2026-08-12
@@ -11,6 +12,9 @@ sources:
 # 第 13～15 章：Transformer Block 与前向传播
 
 > [!abstract] 对 Decoder-Only 语言模型而言，模型维护一条贯穿所有 Block 的 residual stream。Attention 和 FFN 不必重建完整表示，而是分别计算“应该补充什么”的更新量，再通过残差连接写回主通道。多个参数独立的 Block 依次更新表示后，LM Head 才把 `d_model` 维隐藏状态转换成词表 logits。
+
+> [!info] 阅读粒度
+> 本页把 residual stream、Block 布局、输入位置表示与 LM Head 保留在同一条完整前向链中，因此标为“深入机制”；只需快速复述时，阅读摘要、“先抓住一条主线”和“完整前向流程”即可。
 
 ## 先明确本页范围
 

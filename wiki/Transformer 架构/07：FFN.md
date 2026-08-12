@@ -58,5 +58,5 @@ Attention：不同 Token 之间交换、汇总信息
 
 - **来源事实：** 第 7 章将神经网络概括为矩阵变换与非线性的组合，并说明 Transformer Block 中的 FFN 会对每个 Token 表示进行逐位置变换；章节还比较了常见 FFN 结构与参数分布。
 - **本页推论：** 理解“Attention 负责跨位置路由，FFN 负责逐位置加工”足以支撑当前的 Transformer 与应用工程学习；更细的矩阵和激活函数推导可按需要再学。
-- **下一步：** 线性变换（待整理）、Attention 与 QKV（待整理）。
+- **下一步：** [[08：线性变换|线性变换]]、[[09-12：Attention|Attention]]。
 - **来源：** [[raw/links/2026-08-11-Transformer架构从直觉到实现|Transformer 架构：从直觉到实现]]。
