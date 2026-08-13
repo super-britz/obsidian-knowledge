@@ -13,6 +13,12 @@ sources:
 
 > [!abstract] MHA、MQA、GQA 保留多个 Query Head，但让不同数量的 Query Head 共享 K、V。共享越多，KV Cache 和 Decode 内存带宽越省；同时 K/V 表示容量越受约束。GQA 位于 MHA 与 MQA 之间，目标是在质量和推理效率之间取一个可验证的折中。
 
+> [!info] 放回完整生成链
+> - **位置：** Attention 内部怎样组织 Head 的架构选择，不是 Prompt 或应用层功能。
+> - **输入 → 输出：** 输入输出与普通多头 Attention 相同，变化的是多个 Query Head 共享多少组 K/V。
+> - **为什么需要：** Decode 要反复读取 KV Cache；减少 KV Head 可以降低显存和带宽压力，提高长对话并发能力。
+> - **前端何时关心：** 调用托管模型时主要感知延迟、并发和价格；选型或自建部署时才需要比较三种结构。
+
 ## 先看同一条结构轴
 
 设 Query Head 数为 `Hq`，KV Head 数为 `Hkv`，要求 `Hq % Hkv == 0`：

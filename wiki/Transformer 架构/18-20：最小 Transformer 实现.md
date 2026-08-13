@@ -10,271 +10,115 @@ sources:
   - "raw/links/2026-08-12-PyTorch-Module状态与Buffer.md"
 ---
 
-# 第 18～20 章：最小 Decoder-Only Transformer 实现
+# 第 18～20 章：用最小代码验证 Transformer
 
-> [!abstract] 一个最小语言模型项目不是只有 `Model` 类，而是三份代码共同形成闭环：`model.py` 把 Token 映射成 logits，`train.py` 用下一个 Token 目标更新参数，`inference.py` 用相同配置恢复参数并循环生成。真正需要理解的是三者共享的形状、词表、配置和检查点契约，而不是逐行背代码。
+> [!abstract] 这三章的作用不是教你从零训练生产级大模型，而是把前面的概念装进一个能运行的小项目：`model.py` 负责算 logits，`train.py` 负责更新参数，`inference.py` 负责加载参数并循环生成。重点是看懂三者怎样通过 Tokenizer、配置、shape 和 checkpoint 连接起来。
 
-> [!info] 阅读粒度
-> 本页以三份代码共享的系统契约为主题，因此标为“深入机制”；快速复述时，阅读摘要、“项目闭环”、职责表和“来源代码的教学边界”即可。
+> [!tip] 前端开发者可以跳过吗？
+> 如果你只调用模型 API，可以先跳过本页；如果你想理解模型服务为什么会出现词表不匹配、加载失败、乱码或生成越来越慢，本页值得快速读一遍。教学代码用于验证机制，不等于生产训练框架。
 
-## 先看项目闭环
+## 项目闭环
 
 ```text
-训练文本
-→ Tokenizer
-→ Token ID 序列
-→ 随机截取 x / y Batch
-→ model(x, y)
-→ logits + loss
-→ backward + optimizer.step
-→ checkpoint
+训练文本 → Tokenizer → x / y Batch
+→ model.py 得到 logits
+→ train.py 计算 Loss、更新参数
+→ 保存 checkpoint
 
-Prompt
-→ 同一个 Tokenizer
-→ 重建同一种 Model
-→ load_state_dict(checkpoint)
-→ model.generate
-→ Token ID
-→ decode 为文本
+Prompt → 同一个 Tokenizer
+→ inference.py 重建模型、加载 checkpoint
+→ 循环预测 Token
+→ decode 成文本
 ```
 
-三份文件的职责可以先记成：
-
-| 文件 | 输入 | 核心职责 | 输出 |
+| 文件 | 主要输入 | 负责什么 | 主要输出 |
 | --- | --- | --- | --- |
-| `model.py` | Token IDs、可选 targets | 定义参数、前向传播和最小生成循环 | logits、可选 loss、生成序列 |
-| `train.py` | 训练文本、超参数 | 构造 Batch、评估、反向传播、更新与保存 | 训练后的 checkpoint |
-| `inference.py` | checkpoint、Prompt | 恢复模型、关闭训练行为、执行解码 | 生成文本 |
+| `model.py` | Token ID | 定义 Transformer 和一次前向传播 | logits |
+| `train.py` | 训练文本、目标 Token | 计算 Loss、反向传播、更新并保存 | checkpoint |
+| `inference.py` | Prompt、checkpoint | 恢复同一个模型并循环解码 | 文本 |
 
-## `model.py`：把概念变成可组合模块
+## 四份共享契约
 
-最小实现通常按下面的依赖关系组织：
+三份代码能配合，不是因为文件名正确，而是因为它们遵守同一组契约：
 
-```text
-Attention Head
-→ Multi-Head Attention
-
-FFN + Multi-Head Attention + Norm + Residual
-→ Transformer Block
-
-Token Embedding + Position + N × Block + Final Norm + LM Head
-→ Model
-```
-
-关键不是类名，而是每层都遵守形状契约：
+1. **Tokenizer：** 相同文本必须得到相同 Token ID，词表和特殊 Token 也要一致。
+2. **模型配置：** `vocab_size`、`d_model`、层数、头数、位置方案等必须兼容。
+3. **Shape：** 主干维度保持一致，最后才映射到词表。
+4. **Checkpoint：** 参数名和 shape 必须匹配；恢复训练还要保存优化器、步数和随机状态。
 
 ```text
-Token IDs                         [B, T]
-Embedding / residual stream       [B, T, d_model]
-单头 Q、K、V                      [B, T, head_size]
-Attention 分数                    [B, heads, T, T]
-FFN 中间层                        [B, T, d_ff]
-LM Head logits                    [B, T, vocab_size]
+Token IDs                    [B, T]
+隐藏状态                     [B, T, d_model]
+Attention 分数               [B, heads, T, T]
+LM Head logits               [B, T, vocab_size]
 ```
 
-实现前至少检查：
+只保存 `state_dict` 不等于保存完整模型：它不包含 Python 类、Tokenizer 和全部配置。推理前必须先按兼容配置重建结构，再加载张量。
+
+## `forward()` 和 `generate()` 的区别
 
 ```text
-d_model % num_heads == 0
-T <= context_length
-0 <= token_id < vocab_size
+forward：当前序列 → 一次 logits 计算
+
+generate：循环调用 forward
+          → 取最后位置 logits
+          → 选一个 Token
+          → 拼回输入
 ```
 
-### 为什么 Causal Mask 应注册为 Buffer
+`generate()` 是模型外层的控制流程，不是新的神经网络层。这个最小版本通常没有 KV Cache，所以每生成一个 Token 都会重复计算历史；它能帮助理解机制，但速度不能代表现代推理引擎。
 
-因果 Mask 不是需要优化器更新的参数，但通常需要随模型一起移动设备，因此适合注册为 Buffer：
+## 最值得保留的三个测试
 
-```python
-self.register_buffer("causal_mask", mask, persistent=False)
-```
+### 1. Shape 与边界测试
 
-`persistent=False` 表示它不进入 `state_dict`，适合可由配置重新构造的固定 Mask；若某个 Buffer 确实属于必须保存的模型状态，再使用默认的持久 Buffer。同理，固定位置编码如果不会变化，也更适合在初始化时构造为 Buffer，而不是每次 `forward()` 都重新计算；是否持久化应按恢复契约决定。
+断言输出是 `[B, T, vocab_size]`，Loss 是有限值；同时测试序列超长、Token ID 越界以及 `d_model` 无法整除头数时能否尽早报错。
 
-### `forward()` 和 `generate()` 不是同一个层次
+### 2. 单 Batch 过拟合
 
-```text
-forward：对当前输入做一次并行前向计算
-         [B, T] → [B, T, vocab_size]
+固定一个很小的 Batch 反复训练，Loss 应明显下降。否则优先检查目标是否错开一位、因果 Mask 方向、梯度和优化器是否有效。这是验证训练链路能否学习的快速实验，不用于评价泛化能力。
 
-generate：反复调用 forward
-          取最后位置 logits → 采样一个 Token → 拼回输入
-```
+### 3. 保存—加载一致性
 
-`generate()` 是控制流程，不是新的神经网络层。没有 KV Cache 时，每生成一个 Token 都会重新计算截断后上下文中的全部位置。
+同一输入在保存前和重新加载后，logits 应在数值容差内一致。它能一次验证模型配置、参数名和加载流程。
 
-## `train.py`：把连续 Token 流变成监督信号
+## 教学代码不能直接拿去生产
 
-训练数据通常是一条连续 Token 序列。随机选择起点后，输入与目标错开一位：
+最小实现通常省略：
 
-```text
-原始：A B C D E F
-x：   A B C D E
-y：   B C D E F
-```
+- 高效的多头投影、Flash Attention 和 KV Cache；
+- 混合精度、分布式训练、梯度累积与容错；
+- 完整验证集、日志、最佳模型保存和异常监控；
+- EOS、停止字符串、批处理和服务调度；
+- 数据治理、权限、安全和模型评测。
 
-模型一次输出所有位置的 logits：
-
-```text
-logits  [B, T, vocab_size]
-targets [B, T]
-```
-
-计算交叉熵时，常把 Batch 和序列维展平：
-
-```text
-logits  → [B × T, vocab_size]
-targets → [B × T]
-```
-
-一次普通训练迭代是：
-
-```python
-xb, yb = get_batch("train")
-logits, loss = model(xb, yb)
-optimizer.zero_grad(set_to_none=True)
-loss.backward()
-optimizer.step()
-```
-
-这段代码能更新参数，但还不能单独证明模型训练可靠。至少需要：
-
-- 独立的训练集和验证集；
-- `model.eval()` 与 `no_grad()` 下的周期性验证；
-- 同时观察训练 loss 与验证 loss；
-- 保存可恢复的检查点，而不只是最终权重文件。
-
-## `inference.py`：恢复的是同一个模型契约
-
-`state_dict` 只保存张量值，不会自动恢复 Python 类和架构定义。加载时必须先用兼容配置重建模型：
-
-```python
-checkpoint = torch.load(path, map_location=device)
-model = Model(checkpoint["model_config"])
-model.load_state_dict(checkpoint["model_state_dict"])
-model.to(device)
-model.eval()
-```
-
-然后在 `torch.inference_mode()` 下生成：
-
-```python
-with torch.inference_mode():
-    output_ids = model.generate(prompt_ids)
-```
-
-下面几项必须和训练时一致：
-
-- Tokenizer 及其词表；
-- `vocab_size`、`d_model`、层数、头数和上下文长度；
-- 位置表示类型、Norm、激活函数和参数命名；
-- 特殊 Token 的 ID 和停止规则。
-
-只要其中一项不一致，就可能出现无法加载、形状不匹配、Token 越界或生成乱码。
-
-## 检查点不只是模型权重
-
-如果检查点只用于推理，通常至少需要：
-
-```text
-model_state_dict
-model_config
-Tokenizer 标识或文件
-特殊 Token 配置
-```
-
-如果还要从中断处继续训练，还应保存：
-
-```text
-optimizer_state_dict
-scheduler_state_dict
-当前 step / epoch
-随机数状态
-混合精度 scaler 状态（如使用）
-数据进度或采样器状态（按需）
-```
-
-因此要区分：
-
-- **推理检查点**：目标是可重建并生成；
-- **恢复训练检查点**：目标是尽量继续原来的优化轨迹。
-
-## 来源代码的教学边界
-
-第 18～20 章提供的是帮助理解机制的最小实现，不应直接当作生产训练框架。需要特别注意：
-
-1. **词表大小不能只取训练数据中最大的 Token ID。** 使用现成 Tokenizer 时，Prompt 可能出现训练集没出现过但属于合法词表的更大 ID；应使用 Tokenizer 的完整 `vocab_size`，或训练一套与模型绑定的小词表。
-2. **设备不应永久写死在模型配置里。** 在模块内部创建张量时，优先跟随输入张量的 `device`，或使用 Buffer；加载检查点时使用 `map_location` 并由运行环境决定设备。
-3. **固定位置编码不应每次前向重新构造。** 可预先计算并注册为 Buffer，减少重复工作并避免设备不一致。
-4. **只保存模型参数不足以可靠恢复训练。** 还需要优化器、调度器、步数和随机状态。
-5. **最小生成循环没有停止语义。** 如果不检查 EOS、停止字符串或最大上下文，只能依赖 `max_new_tokens` 强制结束。
-6. **没有 KV Cache。** 每一步 Decode 都重复计算历史上下文，序列越长越慢。
-7. **物理拆分多个 Attention Head 便于教学，但效率较低。** 实际实现通常一次投影后 reshape 成多头，利用批量矩阵计算。
-
-## 最值得先做的三个验证
-
-### 1. 形状与越界测试
-
-```text
-随机 Token IDs [B, T]
-→ forward
-→ 断言 logits.shape == [B, T, vocab_size]
-→ 断言 loss 是有限标量
-```
-
-同时测试：`T > context_length`、非法 Token ID、`d_model` 不能整除头数时是否尽早报错。
-
-### 2. 单 Batch 过拟合测试
-
-固定一个很小的 Batch，反复训练。如果实现正确且模型容量足够，loss 应明显下降。若完全不下降，优先检查：
-
-- x / y 是否正确错开一位；
-- 因果 Mask 是否方向相反；
-- 参数是否进入优化器；
-- 梯度是否为零、NaN 或没有生成；
-- 训练前向是否误包在 `no_grad()` / `inference_mode()` 中，或参数的 `requires_grad` 是否被关闭；`eval()` 本身不会关闭梯度，不应把它当作参数完全不更新的原因。
-
-### 3. 保存—加载一致性测试
-
-在 `eval()` 和无梯度模式下：
-
-```text
-同一输入
-→ 保存前 logits
-→ 保存并重新加载
-→ 加载后 logits
-→ 两者应在数值容差内一致
-```
-
-这个测试能同时验证模型配置、参数名、权重文件和加载流程是否匹配。
+因此，“代码能跑”只说明主链路连通，不说明模型训练正确、能泛化或适合部署。
 
 ## 做项目时记住
 
-1. **先固定接口，再扩展功能。** 先保证 `forward(idx, targets=None)`、检查点结构和 Tokenizer 契约稳定，再加入 AMP、梯度累积、分布式训练或 KV Cache。
-2. **教学代码优先可读，生产代码优先可恢复和可观测。** 真正训练前要增加日志、验证、最佳模型保存、异常检测、资源预算和失败恢复。
-3. **生成质量问题不只看采样参数。** 重复、乱码或不连贯也可能来自训练不足、数据质量、词表不一致、上下文截断或检查点错误。
+1. **应用层故障也可能来自模型契约。** 乱码、Token 越界和加载失败通常不是调 Temperature 能解决的。
+2. **推理检查点和恢复训练检查点不同。** 前者保证可重建并生成；后者还要尽量恢复原优化轨迹。
+3. **先测试再优化。** Shape、单 Batch 过拟合、保存—加载一致性通过后，再加入性能功能。
 
 ## 别误解
 
-- **“`model.py` 能运行，就说明训练代码正确。”** 前向形状正确不代表目标错位、梯度更新、验证和检查点流程正确。
-- **“保存 `state_dict` 就保存了整个模型。”** 它不包含 Python 类定义、Tokenizer 和全部训练状态。
-- **“训练 loss 下降就表示模型泛化更好。”** 还必须观察独立验证集；训练下降而验证上升通常意味着过拟合或分布差异。
-- **“Temperature 和 Top-K 能修复模型知识不足。”** 它们只改变解码分布，不能补回模型没有学到的模式。
-- **“这个最小实现就是现代 LLM 的完整训练系统。”** 它省略了大量性能、数值稳定、并行、数据治理和可靠性机制。
+- **“会写最小 Transformer 就能训练大模型。”** 生产系统还需要数据、并行、稳定性、评测和大量计算资源。
+- **“`state_dict` 就是完整模型。”** 它只是张量集合，必须与代码、配置和 Tokenizer 配套。
+- **“训练 Loss 下降就说明效果好。”** 还需要独立验证集和任务评测。
+- **“生成越来越慢是前端流式渲染导致的。”** 也可能是没有 KV Cache 而反复计算历史。
 
 ## 复习
 
-1. `model.py`、`train.py` 和 `inference.py` 通过哪些配置与张量契约连接起来？
-2. 为什么 `generate()` 必须循环调用 `forward()`，而训练可以一次计算多个位置？
-3. 为什么使用现成 Tokenizer 时不能把训练数据中的最大 Token ID 当作完整词表大小？
-4. 推理检查点与可恢复训练检查点分别必须保存什么？
-5. 如果单 Batch 都无法过拟合，应该优先排查哪些环节？
-6. 为什么保存—加载后的 logits 一致性是重要测试？
+1. 三份代码通过哪四类契约连接？
+2. `forward()` 与 `generate()` 分别处在哪个层次？
+3. 为什么保存—加载一致性测试很重要？
+4. 为什么教学实现的性能不能代表生产推理服务？
 
 ## 来源与下一步
 
 - **前置概念：** [[13-15：Transformer Block 与前向传播|Transformer Block 与前向传播]]、[[16-17：训练、推理与参数更新|训练、推理与参数更新]]。
-- **来源事实：** 第 18 章实现 FFN、因果 Attention、Multi-Head Attention、Pre-Norm Block、完整模型与生成循环；第 19 章实现 Token 化、随机 Batch、交叉熵、验证、AdamW、训练循环和检查点；第 20 章实现模型恢复、Prompt 编码、自回归采样、解码及常见生成问题诊断。
-- **机制推导：** 三份文件通过 Tokenizer、模型配置、张量形状和 checkpoint schema 构成同一个系统契约；任一侧不一致都会在加载、训练或生成阶段暴露。
-- **工程建议：** 来源代码适合概念验证；真正训练或部署前，应补齐完整词表、设备可移植性、恢复训练状态、停止条件、测试、日志与性能优化。
-- **下一主题：** [[21-22：Flash Attention 与 KV Cache|第 21～22 章：Flash Attention 与 KV Cache]]。
+- **来源事实：** 第 18～20 章分别实现模型、训练和推理代码；PyTorch 补充来源说明参数、Buffer、自动求导和运行模式的边界。
+- **机制推导：** 三份文件通过 Tokenizer、配置、张量 shape 和 checkpoint schema 构成同一系统契约。
+- **删减说明：** 省略逐模块代码、Buffer 持久化和训练恢复字段清单；需要实际实现时再查原始章节与框架文档。
+- **下一主题：** [[21-22：Flash Attention 与 KV Cache|Flash Attention 与 KV Cache]]。
 - **来源：** [[raw/links/2026-08-11-Transformer架构从直觉到实现|Transformer 架构：从直觉到实现]]、[[raw/links/2026-08-12-PyTorch-Module状态与Buffer|PyTorch Module 状态、Autograd 与 Buffer]]。

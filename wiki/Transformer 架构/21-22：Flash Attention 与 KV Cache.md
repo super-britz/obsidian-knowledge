@@ -12,258 +12,100 @@ sources:
 
 # 第 21～22 章：Flash Attention 与 KV Cache
 
-> [!abstract] Flash Attention 和 KV Cache 都能让 Attention 更快，但解决的是两个不同问题：Flash Attention 优化“一次 Attention 内部怎样搬运和保存中间结果”，KV Cache 优化“连续生成多个 Token 时哪些历史计算不必重做”。前者减少临时显存和 HBM 读写，后者用持续占用的缓存换取 Decode 计算量下降。
+> [!abstract] 两者都让 Attention 更快，但消除的是不同浪费：Flash Attention 减少一次 Attention 内部的大型中间矩阵和显存搬运；KV Cache 在逐 Token 生成时保存历史 K/V，避免每轮重新计算整段前缀。前者省临时内存，后者用持久缓存换 Decode 速度。
 
-> [!info] 阅读粒度
-> 本页用同一张性能地图比较两种容易混淆的优化，因此标为“深入机制”；快速复述时，阅读摘要、对比表、“Prefill 与 Decode”和“别误解”即可。
+> [!info] 放回用户请求链路
+> - **长 Prompt 迟迟不出首字：** 主要发生在 Prefill，Flash Attention 可能改善计算和临时显存。
+> - **首字出来后生成很慢：** 主要发生在 Decode，KV Cache 是基础优化。
+> - **并发一高就显存不足：** 每个请求的 Cache 都在增长，需要 GQA、Cache 管理和调度。
 
-## 先区分两个优化方向
-
-```text
-一次 Attention 调用内部
-Q、K、V → scores → Softmax → output
-问题：是否必须把完整 T×T 中间矩阵写入显存？
-方案：Flash Attention
-
-多次自回归 Decode 之间
-Prompt → Token₁ → Token₂ → Token₃
-问题：历史 Token 的 K、V 是否每一步都要重算？
-方案：KV Cache
-```
+## 先区分两个优化
 
 | 对比 | Flash Attention | KV Cache |
 | --- | --- | --- |
-| 优化范围 | 单次 Attention 内部 | 多个生成步骤之间 |
-| 避免的浪费 | 大型中间矩阵的显存读写 | 历史 K、V 的重复计算 |
-| 主要收益 | 降低临时显存、提高内核效率 | 降低 Decode 计算和单 Token 延迟 |
-| 主要代价 | 依赖适配的内核、形状与硬件 | 每个请求持续占用 KV 显存 |
-| 是否改变模型语义 | 数学上仍是精确 Attention | 复用同一组历史 K、V；与完整前缀重算应在数值容差内一致 |
+| 优化范围 | 一次 Attention 内部 | 多个 Decode 步骤之间 |
+| 避免的浪费 | `T × T` 中间结果的存储和读写 | 历史 Token 的 K/V 重复计算 |
+| 主要收益 | 降低临时显存和内存 IO | 降低每个新 Token 的计算量 |
+| 主要代价 | 依赖硬件和融合内核 | 每个请求持续占用显存 |
+| 是否可同时使用 | 可以 | 可以 |
 
-两者可以同时使用，并不是二选一。
+不要因为名称都含 Attention，就把它们理解成竞争方案。
 
-## Flash Attention：不物化完整 Attention 矩阵
+## Flash Attention 做了什么
 
-标准 Attention 的概念流程是：
-
-```text
-Q @ Kᵀ
-→ scores [B, H, T, T]
-→ Mask + Softmax
-→ probabilities [B, H, T, T]
-→ probabilities @ V
-→ output
-```
-
-朴素实现可能把 `scores` 和 Softmax 结果写入 HBM，再读回来执行下一步。序列变长时，`T × T` 中间矩阵不仅占用显存，还产生大量显存读写。
-
-Flash Attention 的核心是 **Tiling + Online Softmax**：
-
-1. 把 Q、K、V 切成能放入片上高速存储的小块；
-2. 每次只计算一个 Q 块与一个 K/V 块；
-3. 用 Online Softmax 维护每行的运行最大值、指数和与加权输出；
-4. 在最大值更新时重新缩放之前的累积结果；
-5. 最终直接写出 Attention 输出，不把完整 `T × T` 概率矩阵长期存入 HBM。
-
-可以把每行需要维护的状态简化为：
+普通 Attention 的概念流程是：
 
 ```text
-m：截至当前块的最大 score
-l：经过数值稳定缩放后的 exp 总和
-o：经过相同缩放的加权 V 累积结果
+Q @ Kᵀ → 完整分数矩阵 → Softmax → 完整权重矩阵 → @ V
 ```
 
-因为 Softmax 可以分块累积，所以改变计算顺序后仍能得到数学上等价的精确 Attention；但浮点运算顺序不同，不能要求与朴素实现逐 bit 完全一致。
+序列长度为 `T` 时，中间矩阵有 `T × T` 个位置。朴素实现频繁把它写入显存再读回，数据搬运可能成为主要瓶颈。
 
-### Flash Attention 改变了什么
+Flash Attention 把 Q/K/V 分块放进更快的片上存储，用 Online Softmax 累积结果，最后直接写出输出。它仍然计算精确的 Dense Attention，只是改变计算和搬运顺序。
 
-- 减少 HBM 与片上存储之间的数据搬运；
-- 避免保存完整 Attention 概率矩阵，降低中间激活显存；
-- 反向传播时可重新计算部分块内中间结果，用额外计算换取更少存储；
-- 长序列、训练和 Prefill 阶段通常更容易体现收益。
+它没有做到：
 
-### Flash Attention 没改变什么
+- 没把 Dense Attention 的二次算术变成线性；
+- 没减少模型参数；
+- 没解决跨生成步骤的重复计算；
+- 调用某个 API 也不保证一定命中 Flash 内核，仍要看硬件、dtype、shape 和框架。
 
-- Dense Attention 的主要乘加运算仍随序列长度近似二次增长；
-- 模型参数量没有减少；
-- 它不是稀疏 Attention，也不是低秩近似；
-- 调用高层 API 不保证一定命中 Flash 内核，实际后端取决于硬件、dtype、形状、Mask、Dropout 和框架支持。
+## KV Cache 做了什么
 
-工程上优先使用框架提供的融合 Attention API，例如 PyTorch 的 `scaled_dot_product_attention`，让运行时选择可用后端；若性能重要，应通过 profiler 或后端日志确认实际选择，而不是只根据函数名判断。
-
-## KV Cache：只计算新 Token 的 K、V
-
-在第 `t` 个 Decode 步骤中，新 Token 的 Query 需要关注从位置 `1` 到 `t` 的所有 Key 和 Value：
+生成第 `t` 个 Token 时，新 Query 需要读取之前所有 Token 的 K/V。模型参数和历史输入没有改变时，历史 K/V 也不会改变，因此可以保存并复用：
 
 ```text
-Q_t @ [K_1, K_2, ..., K_t]ᵀ
-→ Attention 权重
-→ 加权 [V_1, V_2, ..., V_t]
+Prefill：Prompt → 一次算出历史 K/V → 保存
+Decode：新 Token → 只算新的 Q/K/V → K/V 追加到 Cache
+         → 新 Q 读取全部历史 K/V → 生成下一个 Token
 ```
 
-历史 Token 的 K、V 在参数不变时不会改变，因此可以按层缓存：
+历史 Q 不需要缓存，因为过去位置的输出已经算完；当前步骤只需要新的 Query 去读取历史 K/V。
+
+KV Cache 没让长上下文变成常数时间：新 Query 仍要读取越来越长的历史 K/V。它还会随上下文、层数、KV Head、并发和数据精度增长，最终可能成为服务并发的主要显存限制。
+
+## Prefill 和 Decode 要分开测
 
 ```text
-Prefill：计算 Prompt 的全部 K、V，并用 Prompt 最后位置的 logits 采样 Token₁
-Decode 1：输入 Token₁，只算它的 Q₁、K₁、V₁，追加 K₁、V₁，再采样 Token₂
-Decode 2：输入 Token₂，只算它的 Q₂、K₂、V₂，追加 K₂、V₂，再采样 Token₃
-……
+Prefill：处理整个 Prompt → 建立 Cache → 影响首 Token 延迟
+Decode：每轮生成一个 Token → 读取 Cache → 影响后续生成速度
 ```
 
-不需要缓存历史 Q，因为过去位置的输出已经算完；当前步骤只需要新 Query 去读取全部历史 K、V。
+产品和服务至少分别记录：
 
-KV Cache 省掉的是历史 Token 的 K/V 投影和旧前缀的重复前向计算，但它没有让新 Query “不用看历史”：每个新 Token 仍需与缓存中的全部 Key 做匹配。因此：
+- **TTFT：** 请求开始到第一个 Token；
+- **TPOT / Token/s：** 首 Token 后的生成速度；
+- **Throughput：** 整个服务单位时间处理量；
+- **显存：** 权重、临时工作区和 KV Cache 各占多少。
 
-- 单步 Decode 的 Attention 工作量仍随已缓存长度线性增加；
-- 整段生成的 Attention 工作量仍会随生成长度近似二次增长；
-- KV Cache 不是把长序列生成变成常数时间。
-
-## KV Cache 的显存公式
-
-对于常见实现，KV Cache 的近似容量为：
-
-```text
-bytes
-≈ 2
-× batch_size
-× cached_tokens
-× num_layers
-× num_kv_heads
-× head_dim
-× bytes_per_element
-```
-
-其中：
-
-- `2` 表示 K 和 V；
-- `cached_tokens` 包含 Prompt 和已生成 Token；
-- MHA 通常有 `num_kv_heads = num_query_heads`；
-- MQA / GQA 会减少 `num_kv_heads`，因此能直接减少 KV Cache；
-- 量化 Cache 会减少 `bytes_per_element`，但可能增加量化开销和误差。
-
-这个公式解释了三个系统现象：
-
-1. 长上下文会线性增加单请求缓存；
-2. 每个并发请求通常需要独立缓存，因此 KV 显存会限制并发；
-3. 降低 KV Head 数量、精度或保留长度，都是直接的内存优化方向。
-
-## Prefill 与 Decode 的瓶颈不同
-
-```text
-Prefill
-→ 输入多个 Prompt Token
-→ 并行构建各层 KV Cache
-→ 通常更偏计算密集
-→ 主要影响首 Token 延迟
-
-Decode
-→ 每轮只有少量新 Token
-→ 读取模型权重和不断增长的 KV Cache
-→ 通常更偏内存带宽受限
-→ 主要影响后续每 Token 延迟
-```
-
-因此不能只说“模型每秒生成多少 Token”，还应至少区分：
-
-- **TTFT（Time to First Token）**：从请求进入到第一个输出 Token；
-- **TPOT（Time per Output Token）**：首 Token 之后，每个新 Token 的平均时间；
-- **Throughput**：单位时间内整个服务处理的 Token 或请求数量；
-- **Peak / Reserved Memory**：权重、临时激活和 KV Cache 各自占多少显存。
-
-Flash Attention 通常对长序列 Attention、训练和 Prefill 的临时内存及执行效率更关键；KV Cache 则是标准自回归 Decode 的基础优化。Decode 阶段是否还能从 Flash 类内核明显获益，要看 Query 长度、Batch、缓存布局和具体内核，不能直接套用 Prefill 基准。
-
-## 两者的内存方向恰好相反
-
-这是最容易忽略的关系：
-
-```text
-Flash Attention
-→ 减少单次 Attention 的临时中间内存
-
-KV Cache
-→ 增加跨 Decode 步骤持久保存的请求状态
-```
-
-所以开启 Flash Attention 不代表长对话就不会 OOM；当并发数、上下文长度或 KV Head 数增长时，KV Cache 仍可能成为主要显存占用。
-
-反过来，开启 KV Cache 也不代表单次 Prefill 的 Attention 中间内存已经优化。生产系统通常需要同时管理：
-
-- 模型权重；
-- Prefill / Attention 临时工作区；
-- 每个请求的 KV Cache；
-- Batch 调度和内存碎片。
+前端流式渲染只能改善“用户何时看到内容”，不会降低模型 TTFT 或 TPOT。UI 仍应支持取消、超时、断线和不完整 Markdown。
 
 ## 做项目时记住
 
-1. **先定位瓶颈再选优化。** 长 Prompt OOM 或 Prefill 慢，优先检查 Attention 内核和临时激活；Decode 慢或并发低，优先检查 KV Cache 大小、布局和内存带宽。
-2. **缓存必须和位置及 Mask 同步。** 追加新 KV 时，位置编号、Attention Mask 和有效长度必须一致；如果历史 Token 被修改，受影响位置之后的 Cache 不能直接复用。
-3. **手算 KV Cache 预算。** 在部署前用 `batch × tokens × layers × kv_heads × head_dim × dtype` 估算，并为框架工作区和碎片保留余量。
-4. **验证实际内核。** 融合 API 可能回退到其他实现；以 profiler、峰值显存和端到端延迟为准。
-5. **把单请求延迟与服务吞吐分开。** Continuous Batching、Paged KV Cache 等主要改善资源利用率和并发，不等于每个请求的每一步计算都更少。
-
-## 最值得做的三个验证
-
-### 1. Flash 与基线数值对照
-
-在相同 Q、K、V、Mask 和 Dropout 配置下，比较融合实现与数学基线：
-
-```text
-输出误差在 dtype 对应容差内
-梯度误差在可接受容差内
-峰值显存下降
-端到端时间在目标形状上改善
-```
-
-不能只验证“小张量更快”；实际收益高度依赖序列长度、Head 维度、Batch 和硬件。
-
-### 2. Cached 与 Uncached logits 对照
-
-固定模型和输入，分别使用完整前缀重算与 KV Cache 增量 Decode。每一步最后位置的 logits 应在数值容差内一致。
-
-若不一致，优先检查：
-
-- Cache 拼接维度和层对应关系；
-- `cache_position` / Position ID；
-- 因果 Mask 与 Padding Mask；
-- Batch 中不同序列的有效长度；
-- Beam Search 或请求重排后 Cache 是否同步重排。
-
-### 3. 分阶段性能测量
-
-分别测量不同 Prompt 长度、生成长度和并发下的：
-
-```text
-TTFT
-TPOT
-吞吐量
-峰值显存
-KV Cache 实际占用
-```
-
-只有这样才能判断优化改善的是 Prefill、Decode、单请求延迟还是总体吞吐。
+1. **先定位瓶颈。** 长 Prompt OOM 或 TTFT 高，检查 Prefill 与 Attention 内核；后续生成慢或并发低，检查 Cache 与内存带宽。
+2. **Cache 是请求状态。** 历史 Token、位置或 Mask 改变后，受影响部分不能盲目复用。
+3. **托管 API 不需要猜内部内核。** 记录真实延迟、吞吐、价格和失败率，用端到端结果选模型。
+4. **自建服务必须做数值对照。** Flash 与普通实现、Cached 与 Uncached 的 logits 应在合理浮点容差内一致。
 
 ## 别误解
 
-- **“Flash Attention 把 Dense Attention 的计算复杂度从 O(T²) 降成 O(T)。”** 它主要降低中间存储和内存 IO，Dense Attention 的主要算术工作仍近似二次增长。
-- **“Flash Attention 是近似算法，所以会牺牲模型质量。”** 它重新排序精确 Attention 的计算；浮点舍入可能不同，但不是稀疏近似。
-- **“有 KV Cache 后，每个新 Token 都是 O(1)。”** 新 Query 仍要读取并匹配全部历史 K，Cache 长度越长，单步工作越多。
-- **“KV Cache 会保存模型已经生成的所有中间激活。”** 通常只保存各层历史 K、V，不保存完整 Attention 矩阵或所有层激活。
-- **“训练也应该开启 KV Cache。”** Teacher Forcing 可并行处理完整序列，训练还需要反向传播激活；自回归 Cache 主要服务推理。
-- **“开启两项优化后就不会显存不足。”** Flash 减少临时内存，KV Cache 却会随并发和上下文增长。
+- **“Flash Attention 把复杂度从 `O(T²)` 降到 `O(T)`。”** 它主要减少中间存储和 IO，Dense Attention 的配对计算仍近似二次。
+- **“KV Cache 后每个 Token 都是 `O(1)`。”** 新 Query 仍要读取全部历史 K/V。
+- **“KV Cache 保存所有历史激活。”** 通常只保存每层的历史 K/V。
+- **“两项都开就不会 OOM。”** Flash 减少临时内存，KV Cache 却随请求和上下文增长。
 
 ## 复习
 
-1. Flash Attention 和 KV Cache 分别消除了哪一种重复或搬运？
-2. Flash Attention 为什么能分块计算 Softmax，而不保存完整 `T × T` 概率矩阵？
-3. 为什么 KV Cache 只缓存 K、V，不需要缓存历史 Q？
-4. 为什么 KV Cache 能减少重复计算，却不能让单步 Decode 变成 O(1)？
-5. `num_kv_heads`、上下文长度和并发怎样共同决定 Cache 显存？
-6. 为什么 Flash Attention 与 KV Cache 可以同时开启，却可能分别改善不同指标？
+1. Flash Attention 和 KV Cache 分别消除什么浪费？
+2. 为什么 Flash Attention 省临时内存，却没有消除 Dense Attention 的二次计算？
+3. 为什么 KV Cache 能加速 Decode，同时又限制并发？
+4. 前端怎样区分模型首 Token 慢和后续生成慢？
 
 ## 来源与下一步
 
-- **前置概念：** [[09-12：Attention|Attention]]、[[16-17：训练、推理与参数更新|训练、推理与参数更新]]、[[18-20：最小 Transformer 实现|最小 Transformer 实现]]。
-- **来源事实：** 第 21 章解释 GPU 内存层级、Tiling、Online Softmax、Flash Attention 的 IO 优化及使用边界；第 22 章解释自回归重复计算、KV Cache、Prefill / Decode、缓存显存公式和后续压缩方向。
-- **机制推导：** Flash Attention 优化单次 Attention 的临时 IO，KV Cache 优化多次 Decode 之间的重复计算；两者共同决定长上下文推理中的临时内存、持久状态、延迟与吞吐。
-- **工程补充：** 性能验收应拆分 TTFT、TPOT、吞吐和显存，并通过数值对照确认融合内核与 Cache 没有破坏 Attention 语义。
-- **下一主题：** [[23：MHA、MQA 与 GQA|第 23 章：MHA、MQA 与 GQA]]。
+- **前置概念：** [[09-12：Attention|Attention]]、[[16-17：训练、推理与参数更新|训练与推理]]。
+- **来源事实：** 第 21 章介绍 Tiling、Online Softmax 和 Flash Attention 的 IO 优化；第 22 章介绍自回归重复计算、KV Cache 及 Prefill / Decode。
+- **机制推导：** 两者分别优化单次 Attention 和多次 Decode，资源方向并不相同。
+- **删减说明：** 省略 Online Softmax 状态推导、完整 Cache 显存公式和基准测试清单；自建推理引擎时再查原始章节。
+- **下一主题：** [[23：MHA、MQA 与 GQA|MHA、MQA 与 GQA]]。
 - **来源：** [[raw/links/2026-08-11-Transformer架构从直觉到实现|Transformer 架构：从直觉到实现]]、[[raw/links/2026-08-12-PyTorch-Module状态与Buffer|PyTorch Module 状态、Autograd 与 Buffer]]。
