@@ -3,7 +3,7 @@ type: 章节笔记
 status: 已整理
 chapter: 6
 created: 2026-08-11
-updated: 2026-08-12
+updated: 2026-08-13
 sources:
   - "raw/links/2026-08-11-Transformer架构从直觉到实现.md"
 ---
@@ -36,6 +36,9 @@ sources:
 - **Softmax 处理候选分数。** logits 可以是任意正负数；Softmax 将它们转成正的概率，且总和为 1。
 - **Softmax 出现在两个常见位置。** Attention 用它把“该关注谁”的分数变成权重；输出采样用它把下一个 Token 的分数变成概率。
 - **温度缩放 logits，改变 Softmax 后的解码分布。** 低温让分布更集中，高温让分布更平坦；在正温度下通常不改变 Greedy 的 argmax，但会改变随机采样概率。它不修改模型参数、补充知识或修复错误事实。
+
+> [!example] 为什么叫“温度”
+> 可以简化成 `概率 = Softmax(logits / Temperature)`。`Temperature < 1` 会放大候选分数的差距，让最高分更突出；`Temperature > 1` 会缩小差距，让更多候选有机会被采样。这个名字借用了物理直觉：低温时系统集中在少数稳定状态，高温时更容易进入多种状态。它调节的是随机性，不是事实正确率。
 
 ## 做项目时记住
 
