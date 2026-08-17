@@ -119,5 +119,5 @@ Registry 可以帮助发现 Server 及其元数据，但它不是运行时信任
 
 - **来源事实：** 第 4 章介绍 MCP 的 Client/Server/Transport、能力协商、Tools/Resources/Prompts、协议兼容边界，以及输出注入、权限组合、伪装 Server、超时与熔断等风险。
 - **本页推论：** MCP 的价值是降低工具互操作的接口成本；其代价是将更多外部能力和数据带入 Agent Loop，因此信任与资源控制必须成为协议使用的一部分。
-- **延伸：** [[wiki/AI Agent 架构/05：Skills：任务能力封装|Skills 与角色封装]] 已说明如何将 MCP 等连接能力组织为任务特化、按需加载的工作流与权限配置。
+- **延伸：** [[wiki/AI Agent 架构/05：Skills：任务能力封装|Skills：任务能力封装]] 已说明如何将 MCP 等连接能力组织为任务特化、按需加载的工作流与权限配置。
 - **来源：** [[raw/links/2026-08-17-AI Agent架构-第04章-MCP协议详解|AI Agent 架构：第 4 章 MCP 协议详解]]
