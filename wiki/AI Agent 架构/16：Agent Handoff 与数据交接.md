@@ -13,6 +13,7 @@ related:
   - "wiki/AI Agent 架构/10：任务规划与控制.md"
   - "wiki/AI Agent 架构/14：DAG 依赖调度.md"
   - "wiki/AI Agent 架构/15：Swarm 动态协作.md"
+  - "wiki/AI Agent 架构/17：Tree-of-Thoughts 多路径搜索.md"
 ---
 
 # Agent Handoff 与数据交接
