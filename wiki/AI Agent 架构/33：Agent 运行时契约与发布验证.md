@@ -20,6 +20,7 @@ related:
   - "wiki/AI Agent 架构/25：安全执行与能力沙箱.md"
   - "wiki/AI Agent 架构/30：Background Agents 持久化后台任务.md"
   - "wiki/AI Agent 架构/32：本地 Agent Harness 与用户控制面.md"
+  - "wiki/AI Agent 架构/34：DAG 与 Agent Loop 的控制流边界.md"
 ---
 
 # Agent 运行时契约与发布验证
@@ -109,5 +110,5 @@ MCP 的 Client 与 Server 是两个方向的集成，但都应复用 [[wiki/AI A
 - **来源事实：** 本页基于原章的持久运行时契约、Named Agents、Context/Session/Memory 分离、Daemon/渠道/Pending 状态、双向 MCP、自动触发器、契约测试、Golden Trace、故障注入、Canary/回滚及公开边界整理。
 - **本页推论：** 将平台化 Agent 抽象为“可信入口 → 显式作用域与状态 → 共享受控执行 → 可恢复终态 → 回放与故障验证 → 可回滚发布”的连续控制链。
 - **上一章：** [[wiki/AI Agent 架构/32：本地 Agent Harness 与用户控制面|本地 Agent Harness 与用户控制面]]
-- **下一步：** Part 10 将深入 Agent Loop 工程：长上下文、工具结果、持久化、超时、循环与并行如何在运行中保持连贯和受控。
+- **下一步：** [[wiki/AI Agent 架构/34：DAG 与 Agent Loop 的控制流边界|从 DAG 到 Agent Loop]]：先确定哪些控制流应事前声明，哪些必须由运行时观察驱动。
 - **来源：** [[raw/links/2026-08-18-AI Agent架构-第33章-Building on the Harness Kocoro|第 33 章：Building on the Harness — Kocoro]]
