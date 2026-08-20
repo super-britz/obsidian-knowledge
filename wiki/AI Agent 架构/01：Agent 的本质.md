@@ -11,7 +11,7 @@ sources:
 related:
   - "wiki/AI Agent 架构/00：索引.md"
   - "wiki/AI Agent 架构/02：ReAct 循环.md"
-  - "wiki/AI Agent 架构/案例：研究助手的渐进实验.md"
+  - "wiki/AI Agent 架构/00：导读——从 Agent 闭环到生产系统.md"
 ---
 
 # Agent 的本质
