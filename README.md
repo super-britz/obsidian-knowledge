@@ -7,6 +7,16 @@
 - 来源：https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f
 - 核心想法：保持原始资料不可变，让 LLM 维护一个可持续积累的 Markdown wiki，并用 `AGENTS.md` 定义维护规则。
 
+## 内容速览
+
+目前 wiki/ 已积累 127 篇主题页，raw/ 沉淀 145 份原始资料。主要主题（完整入口见 [wiki/00-索引.md](wiki/00-索引.md)）：
+
+- AI 工程：[AI 工程化-上下文工程与知识复利](wiki/AI%20工程化-上下文工程与知识复利.md)、[AI-Native SDLC：从代码生成到可验证交付闭环](wiki/AI-Native%20SDLC：从代码生成到可验证交付闭环.md)
+- 模型基础：[Transformer 架构](wiki/Transformer%20架构/00：索引.md)、[AI Agent 架构](wiki/AI%20Agent%20架构/00：索引.md)
+- 课程笔记：[35 期 AI 全栈课程](wiki/35期%20AI%20全栈课程笔记/00-索引.md)，48 节系统化整理
+- 工程实践：[前端架构设计思想](wiki/前端架构设计思想.md)、[commit-and-tag-version：基于提交语义的本地发布流水线](wiki/commit-and-tag-version：基于提交语义的本地发布流水线.md)
+- 方法论：[认知工作流：从问题澄清到行动验证](wiki/认知工作流：从问题澄清到行动验证.md)、[LLM Wiki 模式](wiki/LLM%20Wiki%20模式.md)
+
 ## 目录结构
 
 ```text
