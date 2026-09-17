@@ -11,11 +11,11 @@
 
 目前 wiki/ 已积累 127 篇主题页，raw/ 沉淀 145 份原始资料。主要主题（完整入口见 [wiki/00-索引.md](wiki/00-索引.md)）：
 
-- AI 工程：[AI 工程化-上下文工程与知识复利](wiki/AI%20工程化-上下文工程与知识复利.md)、[AI-Native SDLC：从代码生成到可验证交付闭环](wiki/AI-Native%20SDLC：从代码生成到可验证交付闭环.md)
-- 模型基础：[Transformer 架构](wiki/Transformer%20架构/00：索引.md)、[AI Agent 架构](wiki/AI%20Agent%20架构/00：索引.md)
+- AI 工程：[AI 工程化-上下文工程与知识复利](wiki/AI%20工程化-上下文工程与知识复利.md)、[AI-Native SDLC：从代码生成到可验证交付闭环](wiki/AI-Native%20SDLC-从代码生成到可验证交付闭环.md)
+- 模型基础：[Transformer 架构](wiki/Transformer%20架构/00-索引.md)、[AI Agent 架构](wiki/AI%20Agent%20架构/00-索引.md)
 - 课程笔记：[35 期 AI 全栈课程](wiki/35期%20AI%20全栈课程笔记/00-索引.md)，48 节系统化整理
-- 工程实践：[前端架构设计思想](wiki/前端架构设计思想.md)、[commit-and-tag-version：基于提交语义的本地发布流水线](wiki/commit-and-tag-version：基于提交语义的本地发布流水线.md)
-- 方法论：[认知工作流：从问题澄清到行动验证](wiki/认知工作流：从问题澄清到行动验证.md)、[LLM Wiki 模式](wiki/LLM%20Wiki%20模式.md)
+- 工程实践：[前端架构设计思想](wiki/前端架构设计思想.md)、[commit-and-tag-version：基于提交语义的本地发布流水线](wiki/commit-and-tag-version-基于提交语义的本地发布流水线.md)
+- 方法论：[认知工作流：从问题澄清到行动验证](wiki/认知工作流-从问题澄清到行动验证.md)、[LLM Wiki 模式](wiki/LLM%20Wiki%20模式.md)
 
 ## 目录结构
 
@@ -23,7 +23,7 @@
 raw/              原始资料、链接说明、剪藏、文件和本地附件。
 raw/links/        只记录 URL 的来源说明页，文件名使用日期前缀。
 raw/clippings/    Web Clipper 或手动保存的网页全文/长摘录快照，文件名使用日期前缀。
-wiki/             由 LLM 维护的 Markdown wiki 页面，文件名优先使用中文概念名。
+wiki/             由 LLM 维护的 Markdown wiki 页面，文件名优先使用中文概念名，分隔符统一用半角连字符（`主题-副标题` / `NN-标题`）。
 wiki/35期 AI 全栈课程笔记/  01-48 节课程笔记及其索引。
 AGENTS.md         Codex 和其他 agent 的维护入口。
 ```

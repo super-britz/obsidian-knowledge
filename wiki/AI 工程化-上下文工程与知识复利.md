@@ -106,7 +106,7 @@ Plan -> Work -> Review -> Compound
 ## 相关链接
 
 - [[LLM Wiki 模式]]
-- [[wiki/Transformer 架构/28：Prompt 工程|Prompt 工程]]
+- [[wiki/Transformer 架构/28-Prompt 工程|Prompt 工程]]
 - [[wiki/00-索引|索引]]
 
 ## 来源

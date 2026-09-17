@@ -30,4 +30,4 @@ status: 已链接
 
 ## 本地解读
 
-机制、使用流程和工程边界整理见 [[wiki/commit-and-tag-version：基于提交语义的本地发布流水线|commit-and-tag-version：基于提交语义的本地发布流水线]]。
+机制、使用流程和工程边界整理见 [[wiki/commit-and-tag-version-基于提交语义的本地发布流水线|commit-and-tag-version：基于提交语义的本地发布流水线]]。

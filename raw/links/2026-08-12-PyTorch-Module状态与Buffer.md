@@ -25,6 +25,6 @@ status: 已链接
 
 ## 本地解读
 
-- [[wiki/Transformer 架构/16-17：训练、推理与参数更新|训练、推理与参数更新]]
-- [[wiki/Transformer 架构/18-20：最小 Transformer 实现|最小 Transformer 实现]]
-- [[wiki/Transformer 架构/21-22：Flash Attention 与 KV Cache|Flash Attention 与 KV Cache]]
+- [[wiki/Transformer 架构/16-17-训练、推理与参数更新|训练、推理与参数更新]]
+- [[wiki/Transformer 架构/18-20-最小 Transformer 实现|最小 Transformer 实现]]
+- [[wiki/Transformer 架构/21-22-Flash Attention 与 KV Cache|Flash Attention 与 KV Cache]]
