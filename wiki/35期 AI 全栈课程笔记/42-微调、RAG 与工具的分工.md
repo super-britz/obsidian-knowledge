@@ -2,7 +2,7 @@
 type: 课程笔记
 status: 已整理
 created: 2026-07-28
-updated: 2026-07-28
+updated: 2026-10-22
 session_no: 42
 title: 微调、RAG 与工具的分工
 module: 大模型应用工程
@@ -12,6 +12,8 @@ sources:
 ---
 
 # 42 微调、RAG 与工具的分工
+
+[[wiki/35期 AI 全栈课程笔记/00-索引|返回课程目录]]
 
 > [!abstract] 核心问题
 > Prompt、微调、RAG、API 和 Agent 分别应该解决智能客服中的哪类问题？
@@ -114,4 +116,4 @@ sources:
 
 ## 来源
 
-- [[raw/live/42-大模型微调+RAG|42-大模型微调与 RAG 原始文字稿]]
+- [[raw/live/42-大模型微调+RAG.txt|42-大模型微调与 RAG 原始文字稿]]

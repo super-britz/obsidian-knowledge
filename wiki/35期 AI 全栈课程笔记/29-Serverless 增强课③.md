@@ -2,7 +2,7 @@
 type: 课程笔记
 status: 已整理
 created: 2026-07-28
-updated: 2026-07-28
+updated: 2026-10-22
 session_no: 29
 title: Serverless 增强课③
 module: Web3、区块链与 Serverless
@@ -12,6 +12,8 @@ sources:
 ---
 
 # 29 Serverless 增强课③
+
+[[wiki/35期 AI 全栈课程笔记/00-索引|返回课程目录]]
 
 > [!abstract] 核心问题
 > 面对函数、容器、边缘与托管平台，如何建立 Serverless 选型框架？
@@ -98,4 +100,4 @@ JS / CSS / 图片等静态资源 -> 对象存储 -> CDN
 
 ## 来源
 
-- [[raw/live/29-Serverless增强课③|29-Serverless 增强课③原始文字稿]]
+- [[raw/live/29-Serverless增强课③.txt|29-Serverless 增强课③原始文字稿]]

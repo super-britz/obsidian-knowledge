@@ -2,7 +2,7 @@
 type: 课程笔记
 status: 已整理
 created: 2026-08-11
-updated: 2026-08-11
+updated: 2026-10-22
 session_no: 47
 title: AI 客服系统 RAG 开发实践
 module: 大模型应用工程
@@ -12,6 +12,8 @@ sources:
 ---
 
 # 47 AI 客服系统 RAG 开发实践
+
+[[wiki/35期 AI 全栈课程笔记/00-索引|返回课程目录]]
 
 > [!abstract] 核心问题
 > 如何为电商售后客服接入可调试、可评估的 RAG 知识层，并通过分片、召回、重排和资源隔离提高回答准确性与系统稳定性？

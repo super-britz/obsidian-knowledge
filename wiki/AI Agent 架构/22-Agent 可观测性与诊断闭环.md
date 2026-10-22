@@ -2,7 +2,7 @@
 type: 概念建模
 status: 可用
 created: 2026-08-18
-updated: 2026-08-18
+updated: 2026-10-22
 source_chapters:
   - "第22章"
 sources:
@@ -10,7 +10,7 @@ sources:
 related:
   - "wiki/AI Agent 架构/00-索引.md"
   - "wiki/AI Agent 架构/07-上下文工程.md"
-  - "wiki/AI Agent 架构/08：Agent 记忆与检索.md"
+  - "wiki/AI Agent 架构/08-记忆架构.md"
   - "wiki/AI Agent 架构/20-Agent 三层生产架构.md"
   - "wiki/AI Agent 架构/21-Temporal 持久化工作流.md"
   - "wiki/AI Agent 架构/23-Token 预算与成本护栏.md"

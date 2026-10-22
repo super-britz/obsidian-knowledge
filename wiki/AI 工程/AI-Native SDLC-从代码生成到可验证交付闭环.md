@@ -2,7 +2,7 @@
 type: 方法论
 status: 已整理
 created: 2026-09-11
-updated: 2026-09-11
+updated: 2026-10-22
 basis: Claude Academy 课程整理与机制推导
 sources:
   - "raw/links/2026-09-11-Claude Academy AI-Native SDLC Playbook.md"
@@ -13,6 +13,10 @@ related:
 ---
 
 # AI-Native SDLC：从代码生成到可验证交付闭环
+
+[[wiki/AI 工程/00-索引|返回 AI 工程]]
+
+**按需阅读：** 想落地先看 [[#十、最小可行实施路径|实施路径]]；分不清规则、Skill、测试与 Hook，查 [[#三、关键产物的职责边界|职责边界]]；准备交付，查 [[#十二、实践检查清单|检查清单]]。
 
 ## 核心结论
 

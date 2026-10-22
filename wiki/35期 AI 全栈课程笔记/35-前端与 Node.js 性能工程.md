@@ -2,7 +2,7 @@
 type: 课程笔记
 status: 已整理
 created: 2026-07-28
-updated: 2026-07-28
+updated: 2026-10-22
 session_no: 35
 title: 前端与 Node.js 性能工程
 module: 复杂业务、性能与图形学
@@ -12,6 +12,8 @@ sources:
 ---
 
 # 35 前端与 Node.js 性能工程
+
+[[wiki/35期 AI 全栈课程笔记/00-索引|返回课程目录]]
 
 > [!abstract] 核心问题
 > 如何从架构、网络、渲染、监控和运行时建立可验证的性能优化方法？
@@ -121,4 +123,4 @@ PerformanceObserver / Performance API
 
 ## 来源
 
-- [[raw/live/35-阶段二-开篇AI与性能优化与代码健壮性②|35-阶段二性能优化原始文字稿]]
+- [[raw/live/35-阶段二-开篇AI与性能优化与代码健壮性②.txt|35-阶段二性能优化原始文字稿]]

@@ -2,14 +2,14 @@
 type: 概念建模
 status: 可用
 created: 2026-08-18
-updated: 2026-08-18
+updated: 2026-10-22
 source_chapters:
   - "第27章"
 sources:
   - "raw/links/2026-08-18-AI Agent架构-第27章-Deep Research.md"
 related:
   - "wiki/AI Agent 架构/00-索引.md"
-  - "wiki/AI Agent 架构/08：Agent 记忆与检索.md"
+  - "wiki/AI Agent 架构/08-记忆架构.md"
   - "wiki/AI Agent 架构/17-Tree-of-Thoughts 多路径搜索.md"
   - "wiki/AI Agent 架构/19-Research Synthesis 覆盖驱动研究.md"
   - "wiki/AI Agent 架构/21-Temporal 持久化工作流.md"

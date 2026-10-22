@@ -2,7 +2,7 @@
 type: 课程笔记
 status: 已整理
 created: 2026-07-28
-updated: 2026-07-28
+updated: 2026-10-22
 session_no: 28
 title: Serverless 增强课②
 module: Web3、区块链与 Serverless
@@ -12,6 +12,8 @@ sources:
 ---
 
 # 28 Serverless 增强课②
+
+[[wiki/35期 AI 全栈课程笔记/00-索引|返回课程目录]]
 
 > [!abstract] 核心问题
 > 如何用请求时间线判断 CSR、SSR 与 Streaming SSR 的性能，并评估 Serverless 的组织落地？
@@ -99,4 +101,4 @@ Serverless 方案只有进入这些约束后，才算可落地架构。
 
 ## 来源
 
-- [[raw/live/28-Serverless增强课②|28-Serverless 增强课②原始文字稿]]
+- [[raw/live/28-Serverless增强课②.txt|28-Serverless 增强课②原始文字稿]]

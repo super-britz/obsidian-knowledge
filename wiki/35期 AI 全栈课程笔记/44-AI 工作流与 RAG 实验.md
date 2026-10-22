@@ -2,7 +2,7 @@
 type: 课程笔记
 status: 已整理
 created: 2026-07-28
-updated: 2026-07-28
+updated: 2026-10-22
 session_no: 44
 title: AI 工作流与 RAG 实验
 module: 大模型应用工程
@@ -12,6 +12,8 @@ sources:
 ---
 
 # 44 AI 工作流与 RAG 实验
+
+[[wiki/35期 AI 全栈课程笔记/00-索引|返回课程目录]]
 
 > [!abstract] 核心问题
 > 如何让 AI 工作流稳定执行关键步骤，并通过受控实验判断 RAG 问题究竟来自检索、模型还是数据？

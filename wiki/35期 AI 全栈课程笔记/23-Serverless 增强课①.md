@@ -2,7 +2,7 @@
 type: 课程笔记
 status: 已整理
 created: 2026-07-28
-updated: 2026-07-28
+updated: 2026-10-22
 session_no: 23
 title: Serverless 增强课①
 module: Web3、区块链与 Serverless
@@ -12,6 +12,8 @@ sources:
 ---
 
 # 23 Serverless 增强课①
+
+[[wiki/35期 AI 全栈课程笔记/00-索引|返回课程目录]]
 
 > [!abstract] 核心问题
 > SSR 与 Streaming SSR 改变了什么请求链路，又给前端带来了哪些服务端责任？
@@ -94,4 +96,4 @@ SSR 可以更早提供内容，但服务端取数和渲染也可能增加首字�
 
 ## 来源
 
-- [[raw/live/23-Serverless增强课①|23-Serverless 增强课①原始文字稿]]
+- [[raw/live/23-Serverless增强课①.txt|23-Serverless 增强课①原始文字稿]]

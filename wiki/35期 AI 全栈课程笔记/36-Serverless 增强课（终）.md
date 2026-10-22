@@ -2,7 +2,7 @@
 type: 课程笔记
 status: 已整理
 created: 2026-07-28
-updated: 2026-07-28
+updated: 2026-10-22
 session_no: 36
 title: Serverless 增强课（终）
 module: 复杂业务、性能与图形学
@@ -12,6 +12,8 @@ sources:
 ---
 
 # 36 Serverless 增强课（终）
+
+[[wiki/35期 AI 全栈课程笔记/00-索引|返回课程目录]]
 
 > [!abstract] 核心问题
 > Cloudflare 边缘平台与 AWS Serverless 生态应如何选型、部署和验证？
@@ -118,4 +120,4 @@ Hono 等面向 Web 标准的框架更容易适配边缘运行时；依赖 Node.j
 
 ## 来源
 
-- [[raw/live/36-Serverless增强课（终）|36-Serverless 增强课（终）原始文字稿]]
+- [[raw/live/36-Serverless增强课（终）.txt|36-Serverless 增强课（终）原始文字稿]]

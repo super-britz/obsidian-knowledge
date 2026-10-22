@@ -2,7 +2,7 @@
 type: 课程笔记
 status: 已整理
 created: 2026-07-28
-updated: 2026-07-28
+updated: 2026-10-22
 session_no: 45
 title: QLoRA 本地微调实践
 module: 大模型应用工程
@@ -12,6 +12,8 @@ sources:
 ---
 
 # 45 QLoRA 本地微调实践
+
+[[wiki/35期 AI 全栈课程笔记/00-索引|返回课程目录]]
 
 > [!abstract] 核心问题
 > 如何在本地建立一条可复现的 QLoRA 微调链路，并确认训练产物真的可加载、可比较、可服务化？

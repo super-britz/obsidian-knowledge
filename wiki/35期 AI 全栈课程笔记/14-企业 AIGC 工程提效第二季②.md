@@ -2,7 +2,7 @@
 type: 课程笔记
 status: 已整理
 created: 2026-07-28
-updated: 2026-07-28
+updated: 2026-10-22
 session_no: 14
 title: 企业 AIGC 工程提效第二季②
 module: 企业 AIGC 工程提效
@@ -12,6 +12,8 @@ sources:
 ---
 
 # 14 企业 AIGC 工程提效第二季②
+
+[[wiki/35期 AI 全栈课程笔记/00-索引|返回课程目录]]
 
 > [!abstract] 核心问题
 > 如何用规格驱动开发约束 Coding Agent，让需求、实现和验证可以追踪？
@@ -95,4 +97,4 @@ sources:
 
 ## 来源
 
-- [[raw/live/14-企业AIGC工程提效第二季②|14-企业 AIGC 工程提效第二季②原始文字稿]]
+- [[raw/live/14-企业AIGC工程提效第二季②.txt|14-企业 AIGC 工程提效第二季②原始文字稿]]

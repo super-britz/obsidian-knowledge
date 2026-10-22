@@ -2,7 +2,7 @@
 type: 课程笔记
 status: 已整理
 created: 2026-07-28
-updated: 2026-07-28
+updated: 2026-10-22
 session_no: 15
 title: 企业 AIGC 工程提效第二季③
 module: 企业 AIGC 工程提效
@@ -12,6 +12,8 @@ sources:
 ---
 
 # 15 企业 AIGC 工程提效第二季③
+
+[[wiki/35期 AI 全栈课程笔记/00-索引|返回课程目录]]
 
 > [!abstract] 核心问题
 > 如何把团队经验设计成 Agent 可按需调用、组合和验证的 Skills？
@@ -95,4 +97,4 @@ Agent 决定做什么，Skill 提供怎样做的组织经验，Tool 提供实际
 
 ## 来源
 
-- [[raw/live/15-企业AIGC工程提效第二季③|15-企业 AIGC 工程提效第二季③原始文字稿]]
+- [[raw/live/15-企业AIGC工程提效第二季③.txt|15-企业 AIGC 工程提效第二季③原始文字稿]]

@@ -2,7 +2,7 @@
 type: 课程笔记
 status: 已整理
 created: 2026-07-28
-updated: 2026-07-28
+updated: 2026-10-22
 session_no: 13
 title: 企业 AIGC 工程提效第二季
 module: 企业 AIGC 工程提效
@@ -12,6 +12,8 @@ sources:
 ---
 
 # 13 企业 AIGC 工程提效第二季
+
+[[wiki/35期 AI 全栈课程笔记/00-索引|返回课程目录]]
 
 > [!abstract] 核心问题
 > 如何把零散的 AI 编程工具组织成可触发、可观察、可评审、可恢复的企业研发流程？
@@ -98,4 +100,4 @@ sources:
 
 ## 来源
 
-- [[raw/live/13-企业AIGC工程提效第二季|13-企业 AIGC 工程提效第二季原始文字稿]]
+- [[raw/live/13-企业AIGC工程提效第二季.txt|13-企业 AIGC 工程提效第二季原始文字稿]]

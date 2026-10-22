@@ -2,7 +2,7 @@
 type: 课程笔记
 status: 已整理
 created: 2026-07-28
-updated: 2026-07-28
+updated: 2026-10-22
 session_no: 43
 title: Agent 与 Skills 编排
 module: 大模型应用工程
@@ -12,6 +12,8 @@ sources:
 ---
 
 # 43 Agent 与 Skills 编排
+
+[[wiki/35期 AI 全栈课程笔记/00-索引|返回课程目录]]
 
 > [!abstract] 核心问题
 > 如何把模型、工具、记忆、Skills 与 MCP 组合成一个能在真实工程中运行且权限可控的 Agent？

@@ -2,7 +2,7 @@
 type: 课程笔记
 status: 已整理
 created: 2026-07-28
-updated: 2026-07-28
+updated: 2026-10-22
 session_no: 09
 title: 阶段一 AIGC 实战课需求讲解
 module: 前端架构与阶段一实战
@@ -12,6 +12,8 @@ sources:
 ---
 
 # 09 阶段一 AIGC 实战课需求讲解
+
+[[wiki/35期 AI 全栈课程笔记/00-索引|返回课程目录]]
 
 > [!abstract] 核心问题
 > 如何把“生成一段视频”的想法，拆成可以设计、开发、测试和交付的 AIGC 产品？
@@ -102,4 +104,4 @@ sources:
 
 ## 来源
 
-- [[raw/live/09-阶段一AIGC实战课需求讲解|09-阶段一 AIGC 实战课需求讲解原始文字稿]]
+- [[raw/live/09-阶段一AIGC实战课需求讲解.txt|09-阶段一 AIGC 实战课需求讲解原始文字稿]]

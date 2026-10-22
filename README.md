@@ -1,46 +1,24 @@
-# Obsidian 知识库
+# 个人知识库
 
-这是一个用于维护个人知识库的 Obsidian vault，由 LLM 持续整理 wiki 页面。
+**从 [知识首页](wiki/00-索引.md) 开始。** 有具体问题就按问题查；想系统学习就进入专题路线。
 
-这个 vault 的初始结构来自 Andrej Karpathy 的 LLM Wiki 模式：
+## 怎么用
 
-- 来源：https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f
-- 核心想法：保持原始资料不可变，让 LLM 维护一个可持续积累的 Markdown wiki，并用 `AGENTS.md` 定义维护规则。
+- **查问题：** 在知识首页选入口，先看目标页的结论，需要时再读机制和来源。
+- **学主题：** 从专题索引的入门路线开始，完整编号目录用于深入阅读和回查。
+- **核对依据：** 沿页面末尾的来源链接回到原始资料，区分来源观点和整理者推导。
 
-## 内容速览
+在 Obsidian 中，建议把 `wiki/00-索引.md` 加入书签，作为日常入口。
 
-目前 wiki/ 已积累 127 篇主题页，raw/ 沉淀 145 份原始资料。主要主题（完整入口见 [wiki/00-索引.md](wiki/00-索引.md)）：
+## 内容放在哪里
 
-- AI 工程：[AI 工程化-上下文工程与知识复利](wiki/AI%20工程/AI%20工程化-上下文工程与知识复利.md)、[AI-Native SDLC：从代码生成到可验证交付闭环](wiki/AI%20工程/AI-Native%20SDLC-从代码生成到可验证交付闭环.md)
-- 模型基础：[Transformer 架构](wiki/Transformer%20架构/00-索引.md)、[AI Agent 架构](wiki/AI%20Agent%20架构/00-索引.md)
-- 课程笔记：[35 期 AI 全栈课程](wiki/35期%20AI%20全栈课程笔记/00-索引.md)，48 节系统化整理
-- 工程实践：[前端架构设计思想](wiki/前端/前端架构设计思想.md)、[commit-and-tag-version：基于提交语义的本地发布流水线](wiki/commit-and-tag-version-基于提交语义的本地发布流水线.md)
-- 方法论：[认知工作流：从问题澄清到行动验证](wiki/认知工作流-从问题澄清到行动验证.md)、[LLM Wiki 模式](wiki/LLM%20Wiki%20模式.md)
+| 位置 | 用途 |
+| --- | --- |
+| [wiki/00-索引.md](wiki/00-索引.md) | 问题入口、专题路线和通用方法 |
+| `wiki/` | 按主题整理的长期知识页 |
+| `raw/` | 原始文章、课程文字稿、链接说明与附件 |
+| [AGENTS.md](AGENTS.md) | 知识库维护规则 |
 
-## 目录结构
+添加资料时，先放入 `raw/`，再整合进相关 wiki 页面。原始资料保留，整理历史由 Git 记录。
 
-```text
-raw/              原始资料、链接说明、剪藏、文件和本地附件。
-raw/links/        只记录 URL 的来源说明页，文件名使用日期前缀。
-raw/clippings/    Web Clipper 或手动保存的网页全文/长摘录快照，文件名使用日期前缀。
-wiki/             由 LLM 维护的 Markdown wiki 页面，文件名优先使用中文概念名，分隔符统一用半角连字符（`主题-副标题` / `NN-标题`）。
-wiki/35期 AI 全栈课程笔记/  01-48 节课程笔记及其索引。
-wiki/AI 工程/          AI 工程化实践主题目录。
-wiki/前端/             前端领域主题目录。
-AGENTS.md         Codex 和其他 agent 的维护入口。
-```
-
-特殊 wiki 文件：
-
-- `wiki/00-索引.md`：按内容组织的索引，使用 `00-` 前缀以便在 Obsidian 文件排序中置顶。
-
-维护规则只保留在 `AGENTS.md`，不再建立单独的流程、模板、状态和操作日志目录。
-
-## 基本流程
-
-1. 把资料放入 `raw/`。
-2. 让 Codex 摄取这份资料。
-3. 检查 `wiki/` 中生成或更新的页面。
-4. 在 Obsidian 中浏览链接、图谱视图和历史记录。
-
-人负责选择资料和提出问题；LLM 负责维护知识页、链接和索引。
+本库的初始组织方式来自 [Karpathy 的 LLM Wiki 构想](raw/links/2026-06-04-Karpathy%20LLM%20Wiki.md)；具体说明见 [LLM Wiki 模式](wiki/LLM%20Wiki%20模式.md)。

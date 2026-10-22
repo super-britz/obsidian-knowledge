@@ -2,12 +2,14 @@
 type: 概念
 status: 草稿
 created: 2026-06-04
-updated: 2026-08-12
+updated: 2026-10-22
 sources:
   - raw/clippings/2026-06-04-认知重建-Speckit 用了三个月我放弃了.md
 ---
 
 # AI 工程化：上下文工程与知识复利
+
+[[wiki/AI 工程/00-索引|返回 AI 工程]]
 
 ## 核心观点
 
@@ -93,19 +95,11 @@ Plan -> Work -> Review -> Compound
 
 两者共享同一个原则：原始材料不等于可复用知识，只有经过整理、链接、索引和复盘，知识才会在下一次工作中变成上下文。
 
-## 待拆分概念
-
-如果后续继续摄取相关资料，可以考虑拆出这些独立页面：
-
-- 规范驱动 AI 编程的局限
-- 上下文工程
-- 复合工程
-- Agent/Skill/Command 架构
-- 多 Agent 状态传递
-
 ## 相关链接
 
 - [[LLM Wiki 模式]]
+- [[wiki/AI Agent 架构/07-上下文工程|上下文工程的机制与边界]]
+- [[wiki/AI Agent 架构/16-Agent Handoff 与数据交接|多 Agent 的状态与数据交接]]
 - [[wiki/Transformer 架构/28-Prompt 工程|Prompt 工程]]
 - [[wiki/00-索引|索引]]
 
